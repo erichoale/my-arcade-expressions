@@ -1,0 +1,6 @@
+var countdate = $feature.COUNT_DATE;
+var frequencymonths = $feature.FREQ;
+var dueDate = DateAdd(countdate, frequencymonths, "months");
+
+var today = Now();
+return IIf(dueDate <today, "Due", "Not Due");
