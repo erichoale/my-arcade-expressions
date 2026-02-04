@@ -1,0 +1,58 @@
+var name = $feature.Name
+var address = $feature.Address
+var phone = $feature.Phone
+var website = $feature.Link
+var mammals = $feature.Mammals
+var birds = $feature.Bird
+var reptile = $feature.Amphibian_Reptile
+var notes = $feature.Notes
+
+// Conditional formatting for address
+var formattedAddress = iif(
+  address == "Address not provided, contact facility for information.",
+  "<b>" + address + "</b>",
+  address
+)
+
+var formattedMammals = iif(
+  mammals == "No",
+  "<b>" + mammals + "<b>",
+  mammals
+)
+
+var formattedBirds = iif(
+  birds == "No",
+  "<b>" + birds + "<b>",
+  birds
+)
+
+var formattedReptiles = iif(
+  reptile == "No",
+  "<b>" + reptile + "<b>",
+  reptile
+)
+
+// Notes always bold
+var formattedNotes = "<b>" + notes + "</b>"
+
+// Name styled in dark red
+var formattedName = "<span style='color:darkred;'><b>" + name + "</b></span>";
+
+// Website styled as a typical hyperlink
+var formattedWebsite = "<a href='" + website + "' style='color:blue; text-decoration:underline;'>" + website + "</a>"
+
+return {
+  type: "text",
+  text: `
+    <table style="width:100%; border-collapse: collapse;">
+      <tr><td style="padding:4px; padding-right:70px;">Name</td><td style="padding:4px;">${formattedName}</td></tr>
+      <tr><td style="padding:4px; padding-right:70px;">Address</td><td style="padding:4px;">${formattedAddress}</td></tr>
+      <tr><td style="padding:4px; padding-right:70px;">Phone</td><td style="padding:4px;">${phone}</td></tr>
+      <tr><td style="padding:4px; padding-right:70px;">Website</td><td style="padding:4px;">${formattedWebsite}</td></tr>
+      <tr><td style="padding:4px; padding-right:70px;">Mammals</td><td style="padding:4px;">${formattedMammals}</td></tr>
+      <tr><td style="padding:4px; padding-right:70px;">Birds</td><td style="padding:4px;">${formattedBirds}</td></tr>
+      <tr><td style="padding:4px; padding-right:70px;">Reptiles</td><td style="padding:4px;">${formattedReptiles}</td></tr>
+      <tr><td style="padding:4px; padding-right:70px;">Notes</td><td style="padding:4px;">${formattedNotes}</td></tr>
+    </table>
+  `
+}
