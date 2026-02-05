@@ -1,37 +1,60 @@
-var bridgeItemID = "2866169f94484a95aeedc8014bb25533"; // ArcGIS Online Item ID
-var bridgeLayerID = 0; // Layer index inside the item
+// -----------------------------------------------------------------------------
+// CONFIGURATION (SAFE TO EDIT)
+// Replace these placeholder values with your actual item and layer information.
+// -----------------------------------------------------------------------------
 
-/*DO NOT CHANGE ANYTHING BELOW THIS LINE
--------------------------------------------------------------------------*/
+var bridgeItemID  = "<ITEM_ID_REDACTED>";     // ArcGIS Online Item ID
+var bridgeLayerID = 0;                        // Layer index inside the item
 
-var arcgisPortal = Portal('https://SBCountyDPW.maps.arcgis.com');
+// Portal URL for your ArcGIS Online or Enterprise organization
+var arcgisPortal = Portal("https://<your-org>.maps.arcgis.com");
 
-// Retrieve the Feature Layer from ArcGIS Online
 
-var bridgeLayer = FeatureSetByPortalItem(arcgisPortal, bridgeItemID, bridgeLayerID, ["BRIDGE_NUMBER", "Weight_Rest_Truck", "Weight_Rest_Semi_Trailer_Combo", "Weight_Rest_Truck_Full_Trailer"]);
+// -----------------------------------------------------------------------------
+// DO NOT CHANGE ANYTHING BELOW THIS LINE
+// Core logic for retrieving bridge data and summarizing intersecting features.
+// -----------------------------------------------------------------------------
 
-// Select features that intersect the line created in "Proposed Line"
+// Retrieve the Feature Layer from the portal
+var bridgeLayer = FeatureSetByPortalItem(
+    arcgisPortal,
+    bridgeItemID,
+    bridgeLayerID,
+    [
+        "BRIDGE_NUMBER",
+        "Weight_Rest_Truck",
+        "Weight_Rest_Semi_Trailer_Combo",
+        "Weight_Rest_Truck_Full_Trailer"
+    ]
+);
 
-var buff = Buffer($feature, 100, 'METERS'); // Ensure buffer size is appropriate
+// Create a buffer around the current feature (e.g., a proposed line)
+var buff = Buffer($feature, 100, "METERS");
 
-// Populates the listed fields for every record in Bridges_locations that intersects "Proposed Line"
-
+// Select bridge features that intersect the buffer
 var intersectsLayer = Intersects(bridgeLayer, buff);
 var intcount = Count(intersectsLayer);
+
+// String to store formatted output
 var expr = "";
 
-// If there are no recordsDisplays "N/A" for any field that is null
-
+// Build output for each intersecting bridge
 if (intcount > 0) {
     for (var f in intersectsLayer) {
-        var weightTruck = DefaultValue(f.Weight_Rest_Truck, " N/A");
-        var weightSemi = DefaultValue(f.Weight_Rest_Semi_Trailer_Combo, " N/A");
-        var weightFullTrailer = DefaultValue(f.Weight_Rest_Truck_Full_Trailer, " N/A");
-        var bridgeName = DefaultValue(f.BRIDGE_NUMBER, "N/A");
+        var weightTruck       = DefaultValue(f.Weight_Rest_Truck, "N/A");
+        var weightSemi        = DefaultValue(f.Weight_Rest_Semi_Trailer_Combo, "N/A");
+        var weightFullTrailer = DefaultValue(f.Weight_Rest_Truck_Full_Trailer, "N/A");
+        var bridgeName        = DefaultValue(f.BRIDGE_NUMBER, "N/A");
         
-        var atribVal = "Bridge No.: " + bridgeName + " - " + "Truck Wt:" + weightTruck + " | " + "Semi Wt:" + weightSemi + " | " + "Full Wt:" + weightFullTrailer;
+        var atribVal =
+            "Bridge No.: " + bridgeName +
+            " - Truck Wt: " + weightTruck +
+            " | Semi Wt: " + weightSemi +
+            " | Full Wt: " + weightFullTrailer;
+
         expr += atribVal + ";";
     }
 }
 
+// Return final summary string
 return expr;
