@@ -1,0 +1,51 @@
+
+/*
+var bufferDistance = 10;
+var bufferUnit = "meter";
+var closureBuffer = Buffer($feature, bufferDistance, bufferUnit);
+
+
+// Define the source layer to fetch attribute values
+var sourceLayer = FeatureSetByName($map, "CMRS Roads")
+var attributeValues = Intersects(sourceLayer,closureBuffer)
+var valuesList = []
+
+for (var f in attributeValues){
+    Push(valuesList, (f.ROAD_NAME+ ' - ' +f.ROAD_SEQUENCE))
+}
+// Return the list of values, separated by a |
+return Concatenate(valuesList, ' | ')
+*/
+
+var bufferDistance = 10;
+var bufferUnit = "meter";
+var minLengthFeet = 100;
+
+var closureBuffer = Polygon(Buffer($feature, bufferDistance, bufferUnit));
+var sourceLayer = FeatureSetByName($map, "CMRS Roads");
+var candidates = Intersects(sourceLayer, closureBuffer);
+
+var valuesList = [];
+var totalMiles = 0;
+
+for (var f in candidates) {
+    var clipped = Intersection(Geometry(f), closureBuffer);
+    if (IsEmpty(clipped)) {
+        continue;
+    }
+
+    var segmentLengthFeet = Length(clipped, 'feet');
+    if (segmentLengthFeet > minLengthFeet) {
+        var segmentLengthMiles = segmentLengthFeet / 5280;
+        totalMiles += segmentLengthMiles;
+
+        Push(valuesList, f.ROAD_SEQUENCE + ' - ' + f.ROAD_NAME + ' (' + Round(segmentLengthMiles, 3) + ' mi)');
+    }
+}
+
+// Add total to the end
+
+Push(valuesList, 'Total: ' + Round(totalMiles, 3) + ' mi');
+
+return Concatenate(valuesList, ' | ')
+
