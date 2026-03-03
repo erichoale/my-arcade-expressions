@@ -1,0 +1,31 @@
+DUE_DATE
+
+var countDate = $feature.COUNT_DATE
+var frequency = $feature.FREQ
+
+if (!IsEmpty(countDate) && !IsEmpty(frequency)) {
+  return DateAdd(countDate, frequency, 'months');
+} else {
+  return null;
+}
+
+DueDateDescription
+
+var countdate = $feature.COUNT_DATE
+var frequencymonths = $feature.FREQ
+
+if (IsEmpty(countdate) || IsEmpty(frequencyMonths)){
+  return "Missing Date";
+}
+
+var dueDate = DateAdd(countdate, frequencymonths, "months");
+var today = Now();
+var twoYearsFromNow = DateAdd(today, 24, "months");
+
+if(dueDate < today) {
+  return "Due";
+} else if (dueDate <= twoYearsFromNow) {
+  return "Due Within 2 Years";
+} else {
+  return "Not Due";
+}
