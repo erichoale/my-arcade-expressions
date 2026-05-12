@@ -1,0 +1,37 @@
+var fs = FeatureSetByPortalItem(
+  Portal('https://example.maps.arcgis.com'),
+  'abcdefghi123456789',
+  0, // layer index
+  ['widgetA', 'WidgetB', 'WidgetC', 'WidgetD'],
+  false
+)
+
+var g = First(GroupBy(
+    fs,
+    {name: 'result', expression: '1'},
+    [
+        {name: 'WidgetA1', expression: "CASE WHEN widgetA = 'Good' THEN 1 ELSE 0 END", statistic: 'SUM'},
+        {name: 'WidgetA2', expression: "CASE WHEN widgetA = 'Missing' THEN 1 ELSE 0 END", statistic: 'SUM'},
+        {name: 'WidgetA3', expression: "CASE WHEN widgetA = 'Damaged' THEN 1 ELSE 0 END", statistic: 'SUM'},
+        {name: 'WidgetB1', expression: "CASE WHEN widgetB = 'N' THEN 1 ELSE 0 END", statistic: 'SUM'},
+        {name: 'WidgetB1', expression: "CASE WHEN widgetB = 'N' THEN 1 ELSE 0 END", statistic: 'SUM'},
+        {name: 'WidgetB1', expression: "CASE WHEN widgetB = 'N' THEN 1 ELSE 0 END", statistic: 'SUM'},
+        
+    ]
+))
+
+return FeatureSet(Text({
+    fields: [
+        {name: 'item', type: 'esriFieldTypeString'},
+        {name: 'condition', type: 'esriFieldTypeString'},
+        {name: 'count', type: 'esriFieldTypeInteger'},
+    ],
+    geometryType: '',
+    features: [
+        {attributes: {item: 'WidgetA', condition: 'Good', count: g['WidgetA1']}},
+        {attributes: {item: 'WidgetA', condition: 'Missing', count: g['WidgetA2']}},
+        {attributes: {item: 'WidgetA', condition: 'Damaged', count: g['WidgetA3']}},
+        {attributes: {item: 'WidgetB', condition: 'N', count: g['WidgetB1']}},
+
+    ]
+}))
