@@ -1,0 +1,16 @@
+var numberText = Text($datapoint.ID, '#'); // '#' pattern removes commas
+
+return {
+  textColor: 'white',               // White text color
+  backgroundColor: 'black',         // Black background
+  iconName: $datapoint.Status,   // Keep the symbology icon (assuming iconName is a field or set)
+  iconAlign: 'left',                // Icon placement next to text
+  iconColor: 'white',               // Optional: icon color white to match text
+  iconOutlineColor: 'white',        // Optional: icon outline color white
+  attributes: {
+    displayText: "<strong>" + "Vote Center ID: " + numberText + "</strong>", //adding the "</strong>" closes the bolding
+    secondLine: $datapoint.PC_BuildingName         // Use the formatted number text without commas
+  }
+}
+
+//when finished add the attributes to the display portion of the list: {expression/displayText}{expression/secondLine}
